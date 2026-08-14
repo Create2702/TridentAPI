@@ -1,0 +1,38 @@
+name: CI
+on:
+    pull_request:
+        branches: [ "main" ]
+
+jobs:
+    http-response-test:
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout GitHub-repository
+              uses: actions/checkout@v7
+            
+            - name: Setup Python
+              uses: actions/setup-python@v7
+              with:
+                python-version: "3.14"
+                
+            - name: Install dependencies
+              run: pip install -r requirements.txt
+            
+            - name: Run uvicorn
+              run: |
+                uvicorn src.main:app --port 2702 &
+                echo $! > uvicorn.pid
+                sleep 10
+            
+            - name: Test
+              run: |
+                cd tests
+                pytest
+            
+            - name: Stop uvicorn
+              if: always()
+              run: |
+                kill $(cat uvicorn.pid)
+                
+            
+
