@@ -39,13 +39,18 @@ def get_data(year: int, month: int, day: int, hour_utc: int, station: int, is_ro
 
     parcel_profile = calc.parcel_profile(pressure, temperature[0], dewpoint[0])
     cape, cin = calc.cape_cin(pressure, temperature, dewpoint, parcel_profile)
+    sbcape, sbcin = calc.surface_based_cape_cin(pressure, temperature, dewpoint)
+    mucape, mucin = calc.most_unstable_cape_cin(pressure, temperature, dewpoint)
     lcl_p, lcl_t = calc.lcl(pressure[0], temperature[0], dewpoint[0])
+    lcl_height = lcl_p * units.meters
     lfc_p, lfc_t = calc.lfc(pressure, temperature, dewpoint)
     el_p, el_t = calc.el(pressure, temperature, dewpoint)
     srh_pos_01, srh_neg_01, srh_01 = calc.storm_relative_helicity(height, u_wind, v_wind, depth=1 * units.km)
     srh_pos_03, srh_neg_03, srh_03 = calc.storm_relative_helicity(height, u_wind, v_wind, depth=3 * units.km)
     u_shear, v_shear = calc.bulk_shear(pressure, u_wind, v_wind, height, depth=6 * units.km)
     bulk_shear_06 = calc.wind_speed(u_shear, v_shear)
+    li = calc.lifted_index(pressure, temperature, parcel_profile)
+    stp = calc.significant_tornado(sbcape, lcl_height, srh_01, bulk_shear_06)
 
     result = {
                 "temperature": temperature[0].m,
@@ -53,6 +58,12 @@ def get_data(year: int, month: int, day: int, hour_utc: int, station: int, is_ro
                 "pressure": pressure[0].m,
                 "cape": cape.m,
                 "cin": cin.m,
+                "sbcape": sbcape.m,
+                "sbcin": sbcin.m,
+                "mucape": mucape.m,
+                "mucin": mucin.m,
+                "li": li.m,
+                "stp": stp.m,
                 "lcl_p": lcl_p.m,
                 "lcl_t": lcl_t.m,
                 "lfc_p": lfc_p.m,
