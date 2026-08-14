@@ -4,6 +4,10 @@ updates:
     directory: "/"
     schedule:
       interval: "daily"
+    groups:
+      pydantic:
+        patterns:
+          - "pydantic*"
   
   - package-ecosystem: "github-actions"
     directory: "/"
