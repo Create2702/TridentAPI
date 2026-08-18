@@ -27,7 +27,7 @@ pluggy==1.6.0
 pooch==1.9.0
 protobuf==7.35.1
 pydantic==2.13.4
-pydantic_core==2.46.4
+pydantic_core==2.48.0
 Pygments==2.20.0
 pyparsing==3.3.2
 pyproj==3.7.2
